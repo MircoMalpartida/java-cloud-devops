@@ -1,17 +1,18 @@
 pipeline {
-  agent any
+  agent { label 'docker' }
 
   stages {
-    stage('Build') {
+    stage('Build Image') {
       steps {
-        sh 'mvn clean package'
+        sh 'docker build -t mircodocker14/java-cloud-devops:1.0 .'
       }
     }
 
-    stage('Docker Build') {
+    stage('Push Image') {
       steps {
-        sh 'docker build -t java-cloud-devops .'
+        sh 'docker push mircodocker14/java-cloud-devops:1.0'
       }
     }
   }
 }
+
