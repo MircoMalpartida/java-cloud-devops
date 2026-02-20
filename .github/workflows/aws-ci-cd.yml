@@ -17,8 +17,16 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
+      # 🔵 SONARQUBE ANALYSIS
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN_AWS: ${{ secrets.SONAR_TOKEN_AWS }}
+          SONAR_HOST_URL: http://http://23.20.18.144/:9000   # Cambia esto
 
       - uses: aws-actions/amazon-ecr-login@v2
 
@@ -42,8 +50,6 @@ jobs:
             ECR_REPOSITORY=${{ secrets.ECR_REPOSITORY }}
             IMAGE_TAG=${{ github.sha }}
             echo "Deploying $ECR_REPOSITORY:$IMAGE_TAG"
-            echo "ECR_REPOSITORY=$ECR_REPOSITORY"
-            echo "IMAGE_TAG=$IMAGE_TAG"
             docker pull $ECR_REPOSITORY:$IMAGE_TAG
             docker stop demo || true
             docker rm demo || true
